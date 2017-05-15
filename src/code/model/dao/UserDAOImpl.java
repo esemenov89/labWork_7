@@ -45,7 +45,6 @@ public class UserDAOImpl implements UserDAO {
             if (resultSet.next()) {
                 user = createEntity(resultSet);
             }
-            LOGGER.debug("user " + user);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new LibraryException("SQLException", "findUserByLoginAndPassword");
@@ -74,7 +73,6 @@ public class UserDAOImpl implements UserDAO {
             if (resultSet.next()) {
                 user = createEntity(resultSet);
             }
-            LOGGER.debug("user " + user);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new LibraryException("SQLException", "findUserByLogin");
@@ -124,7 +122,6 @@ public class UserDAOImpl implements UserDAO {
             if (resultSet.next()) {
                 user = createEntity(resultSet);
             }
-            LOGGER.debug("user " + user);
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new LibraryException("SQLException", "findUserByMail");

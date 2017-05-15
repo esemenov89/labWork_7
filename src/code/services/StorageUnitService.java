@@ -1,5 +1,6 @@
 package code.services;
 
+import code.model.pojo.NewStorageUnit;
 import code.model.pojo.StorageUnit;
 
 import java.sql.SQLException;
@@ -14,7 +15,6 @@ public interface StorageUnitService {
     ArrayList<StorageUnit> getAllStorageUnits();
     StorageUnit getStorageUnitByISN(String isn);
     void delStorageUnitByISN(String isn);
-    StorageUnit validateStorageUnit(String author, String title, String publishingHouse, String city, String year,
-                                    String pagesCount, String isn, String text);
+    StorageUnit validateStorageUnit(NewStorageUnit newStorageUnit);
     void addStorageUnit(StorageUnit storageUnit);
 }

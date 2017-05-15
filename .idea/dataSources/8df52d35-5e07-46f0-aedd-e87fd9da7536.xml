@@ -4,9 +4,9 @@
     <root id="1"/>
     <schema id="2" parent="1" name="ADMIN">
       <ObjectId>48</ObjectId>
-      <IntrospectionTimestamp>2017-05-07.11:44:34</IntrospectionTimestamp>
+      <IntrospectionTimestamp>2017-05-15.21:19:13</IntrospectionTimestamp>
       <CreatedTimestamp>2017-04-13.17:03:19</CreatedTimestamp>
-      <ModifiedTimestamp>2017-05-07.11:44:23</ModifiedTimestamp>
+      <ModifiedTimestamp>2017-05-15.21:19:11</ModifiedTimestamp>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -172,7 +172,7 @@
     <table id="38" parent="2" name="ELCATALOG">
       <ObjectId>20157</ObjectId>
       <CreatedTimestamp>2017-04-14.14:59:51</CreatedTimestamp>
-      <ModifiedTimestamp>2017-04-14.17:06:54</ModifiedTimestamp>
+      <ModifiedTimestamp>2017-05-15.21:19:11</ModifiedTimestamp>
       <TemporaryPreserve>1</TemporaryPreserve>
     </table>
     <table id="39" parent="2" name="READ_STORAGE_UNIT">
@@ -1936,7 +1936,7 @@ CUST_FIRST_NAME</ColNames>
     </column>
     <column id="413" parent="38" name="CITY">
       <Position>4</Position>
-      <DataType>VARCHAR2(50)|0</DataType>
+      <DataType>VARCHAR2(100)|0</DataType>
     </column>
     <column id="414" parent="38" name="YEAR">
       <Position>5</Position>

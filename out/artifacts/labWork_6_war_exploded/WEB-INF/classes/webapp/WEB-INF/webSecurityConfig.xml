@@ -29,19 +29,10 @@
 
     </http>
 
-    <!--TODO custom authentication-manager-->
+    <!--+ TODO custom authentication-manager-->
     <authentication-manager>
-        <authentication-provider>
-            <password-encoder ref="encoder" />
-            <jdbc-user-service data-source-ref="dataSource"
-                               users-by-username-query=
-                                       "select nick,password,enabled from users where NICK=?"
-                               authorities-by-username-query=
-                                       "select nick, ROLE from USERS where NICK =?  " />
-        </authentication-provider>
+        <authentication-provider
+                ref="customAuthenticationProvider" />
     </authentication-manager>
-
-    <beans:bean id="encoder"
-                class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 
 </beans:beans>

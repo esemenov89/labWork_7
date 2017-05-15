@@ -1,5 +1,6 @@
 package code.controllers;
 
+import code.model.pojo.NewStorageUnit;
 import code.model.pojo.StorageUnit;
 import code.model.pojo.User;
 import code.services.StorageUnitService;
@@ -7,6 +8,7 @@ import code.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -86,6 +88,7 @@ public class ListForAdminsController {
             mav.addObject("pagesCount", storageUnit.getPagesCount());
             mav.addObject("isn", storageUnit.getIsn());
             mav.addObject("text", storageUnit.getText());
+            mav.addObject("isnOld", storageUnit.getIsn());
 
             mav.setViewName("/listEntitiesForAdmins/changeStorageUnit");
         }
@@ -94,16 +97,8 @@ public class ListForAdminsController {
 
     //TODO Model Attribute for RequestParams
     @RequestMapping(value = "/changeStorageUnit",method = RequestMethod.POST)
-    public ModelAndView changeStorageUnitPost(@RequestParam(value = "isnOld", required = true) String isnOld,
-                                              @RequestParam(value = "author", required = true) String author,
-                                              @RequestParam(value = "title", required = true) String title,
-                                              @RequestParam(value = "publishingHouse", required = true) String publishingHouse,
-                                              @RequestParam(value = "city", required = true) String city,
-                                              @RequestParam(value = "year", required = true) String year,
-                                              @RequestParam(value = "pagesCount", required = true) String pagesCount,
-                                              @RequestParam(value = "isnNew", required = true) String isnNew,
-                                              @RequestParam(value = "text", required = true) String text) {
-        return changeOrAddStorageUnit(isnOld,author,title,publishingHouse,city,year,pagesCount,isnNew,text,true);
+    public ModelAndView changeStorageUnitPost(@ModelAttribute NewStorageUnit newStorageUnit) {
+        return changeOrAddStorageUnit(newStorageUnit,true);
     }
 
     @RequestMapping(value = "/addStorageUnit",method = RequestMethod.GET)
@@ -112,24 +107,20 @@ public class ListForAdminsController {
     }
 
     @RequestMapping(value = "/addStorageUnit",method = RequestMethod.POST)
-    public ModelAndView addStorageUnitPost(@RequestParam(value = "isnOld", required = true) String isnOld,
-                                     @RequestParam(value = "author", required = true) String author,
-                                     @RequestParam(value = "title", required = true) String title,
-                                     @RequestParam(value = "publishingHouse", required = true) String publishingHouse,
-                                     @RequestParam(value = "city", required = true) String city,
-                                     @RequestParam(value = "year", required = true) String year,
-                                     @RequestParam(value = "pagesCount", required = true) String pagesCount,
-                                     @RequestParam(value = "isnNew", required = true) String isnNew,
-                                     @RequestParam(value = "text", required = true) String text) {
-        return changeOrAddStorageUnit(isnOld,author,title,publishingHouse,city,year,pagesCount,isnNew,text,false);
+    public ModelAndView addStorageUnitPost(@ModelAttribute NewStorageUnit newStorageUnit) {
+        return changeOrAddStorageUnit(newStorageUnit,false);
     }
 
-    public ModelAndView changeOrAddStorageUnit(String isnOld,String author,String title,String publishingHouse,String city,
-                                               String year, String pagesCount, String isnNew,String text,boolean change) {
+
+    public ModelAndView changeOrAddStorageUnit(NewStorageUnit newStorageUnit1,boolean change) {
+        NewStorageUnit newStorageUnit = new NewStorageUnit(newStorageUnit1.getAuthor(),newStorageUnit1.getTitle(),
+                newStorageUnit1.getPublishingHouse(),newStorageUnit1.getCity(),newStorageUnit1.getYear(),
+                newStorageUnit1.getPagesCount(),newStorageUnit1.getIsn().split(",")[0],newStorageUnit1.getText(),newStorageUnit1.getIsnOld());
+
         ModelAndView mav = new ModelAndView();
         boolean error = false;
 
-        StorageUnit storageUnit = storageUnitService.validateStorageUnit(author, title, publishingHouse, city, year, pagesCount, isnNew, text);
+        StorageUnit storageUnit = storageUnitService.validateStorageUnit(newStorageUnit);
 
             if (storageUnit.getAuthor().equals("@Error1")) {
                 mav.addObject("changeAuthor",
@@ -163,11 +154,11 @@ public class ListForAdminsController {
             }
             if (storageUnit.getIsn().equals("@Error1")) {
                 mav.addObject("changeIsn",
-                        "Field [City] can be contain digits, latin symbols and cirilic symbols and symbol: [-], and field don't be empty.");
+                        "Field [ISN] can be contain digits, latin symbols and cirilic symbols and symbol: [-], and field don't be empty.");
                 error = true;
             }
             if (!change) {
-                if (storageUnitService.getStorageUnitByISN(isnNew) != null) {
+                if (storageUnitService.getStorageUnitByISN(newStorageUnit.getIsn()) != null) {
                     mav.addObject("changeIsn",
                             "Field [ISN] is a unique, storage unit with this isn already contain in database!");
                     error = true;
@@ -180,28 +171,28 @@ public class ListForAdminsController {
             }
             if (change) {
                 if (!error) {
-                    if (isnOld.equals(isnNew)) {
-                        storageUnitService.delStorageUnitByISN(isnOld);
+                    if (newStorageUnit.getIsnOld().equals(newStorageUnit.getIsn())) {
+                        storageUnitService.delStorageUnitByISN(newStorageUnit.getIsnOld());
                     } else {
-                        if (storageUnitService.getStorageUnitByISN(isnNew) != null) {
+                        if (storageUnitService.getStorageUnitByISN(newStorageUnit.getIsn()) != null) {
                             mav.addObject("changeIsn",
                                     "Field [ISN] is a unique, storage unit with this isn already contain in database!");
                             error = true;
                         } else {
-                            storageUnitService.delStorageUnitByISN(isnOld);
+                            storageUnitService.delStorageUnitByISN(newStorageUnit.getIsnOld());
                         }
                     }
                 }
             }
             if (error) {
-                mav.addObject("author", author);
-                mav.addObject("title", title);
-                mav.addObject("publishingHouse", publishingHouse);
-                mav.addObject("city", city);
-                mav.addObject("year", year);
-                mav.addObject("pagesCount", pagesCount);
-                mav.addObject("isn", isnNew);
-                mav.addObject("text", text);
+                mav.addObject("author", newStorageUnit.getAuthor());
+                mav.addObject("title", newStorageUnit.getTitle());
+                mav.addObject("publishingHouse", newStorageUnit.getPublishingHouse());
+                mav.addObject("city", newStorageUnit.getCity());
+                mav.addObject("year", newStorageUnit.getYear());
+                mav.addObject("pagesCount", newStorageUnit.getPagesCount());
+                mav.addObject("isn", newStorageUnit.getIsn());
+                mav.addObject("text", newStorageUnit.getText());
                 mav.setViewName("/listEntitiesForAdmins/changeStorageUnit");
             } else {
                 storageUnitService.addStorageUnit(storageUnit);

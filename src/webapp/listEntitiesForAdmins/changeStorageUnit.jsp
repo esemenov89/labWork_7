@@ -20,30 +20,30 @@
 <form method="post">
     <p>Author of text:</p>
     <p style="color: red;">${changeAuthor}</p>
-    <input type="text" name="author" value="${author}"/>
+    <input type="text" name="author" maxlength="50" value="${author}"/>
     <p>Title:</p>
     <p style="color: red;">${changeTitle}</p>
-    <input type="text" name="title"  value="${title}"/>
+    <input type="text" name="title" maxlength="50" value="${title}"/>
     <p>Publishing house:</p>
     <p style="color: red;">${changePublishingHouse}</p>
-    <input type="text" name="publishingHouse" value="${publishingHouse}"/>
+    <input type="text" name="publishingHouse" maxlength="50" value="${publishingHouse}"/>
     <p>City:</p>
     <p style="color: red;">${changeCity}</p>
-    <input type="text" name="city" value="${city}"/>
+    <input type="text" name="city" maxlength="50" value="${city}"/>
     <p>Year:</p>
     <p style="color: red;">${changeYear}</p>
-    <input type="text" name="year" value="${year}"/>
+    <input type="text" name="year" maxlength="4" value="${year}"/>
     <p>Pages count:</p>
     <p style="color: red;">${changePagesCount}</p>
-    <input type="text" name="pagesCount" value="${pagesCount}"/>
-    <p>ISN:</p>
+    <input type="text" name="pagesCount" maxlength="4" value="${pagesCount}"/>
+    <p>ISN of storage unit:</p>
     <p style="color: red;">${changeIsn}</p>
-    <input type="text" name="isnNew" value="${isn}"/>
+    <input type="text" name="isn" maxlength="50" value="${isn}"/>
     <p>Text:</p>
     <p style="color: red;">${changeText}</p>
     <p></p>
-    <input type="hidden" name="isnOld" value="${isn}"/>
-    <textarea rows="20" cols="100" name="text">${text}</textarea>
+    <input type="hidden" name="isnOld" value="${isnOld}"/>
+    <textarea rows="20" cols="100" maxlength="100000" name="text">${text}</textarea>
     <p></p>
     <input type="submit" value="ok"/>
 </form>

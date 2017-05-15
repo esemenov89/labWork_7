@@ -26,9 +26,9 @@
                     <input name="submit" type="submit" value="Login"/>
                 </td>
                     <td style="text-align:left;vertical-align:top">
-                        <input type='text' name='username'/>
+                        <input type='text' maxlength="16" name='username'/>
                         <br><br>
-                        <input type='password' name='password'/>
+                        <input type='password' maxlength="16" name='password'/>
                     </td></tr>
             </table>
         </form>

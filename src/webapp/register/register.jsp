@@ -16,13 +16,13 @@
 <form method="post">
     <p>Login:</p>
     <p style="color: red;">${registerLogin}</p>
-    <input type="text" name="login"/>
+    <input type="text" maxlength="16" name="login"/>
     <p>Password (password most be contain latin symbols and digits, minimum 8 symbols):</p>
     <p style="color: red;">${registerPassword}</p>
-    <input type="password" name="password"/>
+    <input type="password" maxlength="16" name="password"/>
     <p>Email:</p>
     <p style="color: red;">${registerMail}</p>
-    <input type="text" name="email"/>
+    <input type="text" maxlength="30" name="email"/>
     <p></p>
     <input type="submit" value="ok"/>
 </form>

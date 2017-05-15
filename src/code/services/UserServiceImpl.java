@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
         this.userDAO = userDAO;
     }
 
+    @Override
+    public User findUserByLogin(String login){
+        return userDAO.findUserByLogin(login);
+    }
+
     /**
      * Method for authorization user
      * @param login - of user

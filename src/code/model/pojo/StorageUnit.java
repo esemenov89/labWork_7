@@ -8,9 +8,10 @@ public class StorageUnit {
     private String title;
     private String publishingHouse;
     private String city;
-    private int year;
-    private int pagesCount;
+    private Integer year;
+    private Integer pagesCount;
     private String isn;
+
     private String text;
 
     public String getAuthor() {
@@ -61,11 +62,11 @@ public class StorageUnit {
         this.city = city;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public void setPagesCount(int pagesCount) {
+    public void setPagesCount(Integer pagesCount) {
         this.pagesCount = pagesCount;
     }
 
@@ -77,9 +78,10 @@ public class StorageUnit {
         this.text = text;
     }
 
-    public StorageUnit(String author, String title, String publishingHouse, String city, int year, int pagesCount, String isn, String text) {
+    public StorageUnit(String author, String title, String publishingHouse, String city, Integer year, Integer pagesCount, String isn, String text) {
         this.author = author;
         this.title = title;
+
         this.publishingHouse = publishingHouse;
         this.city = city;
         this.year = year;
