@@ -15,7 +15,22 @@ public class ElcatalogEntity {
     private Long year;
     private Long pagesCount;
     private String isn;
+
+    public ElcatalogEntity() {
+    }
+
     private String text;
+
+    public ElcatalogEntity(String author, String title, String publishingHouse, String city, Long year, Long pagesCount, String isn, String text) {
+        this.author = author;
+        this.title = title;
+        this.publishingHouse = publishingHouse;
+        this.city = city;
+        this.year = year;
+        this.pagesCount = pagesCount;
+        this.isn = isn;
+        this.text = text;
+    }
 
     @Basic
     @Column(name = "AUTHOR", nullable = true, length = 255)

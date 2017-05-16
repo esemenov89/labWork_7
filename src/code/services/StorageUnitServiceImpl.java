@@ -1,6 +1,7 @@
 package code.services;
 
 import code.model.dao.StorageUnitDAO;
+import code.model.hibernate.ElcatalogEntity;
 import code.model.pojo.NewStorageUnit;
 import code.model.pojo.StorageUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @return all storage units from database
      */
     @Override
-    public ArrayList<StorageUnit> getAllStorageUnits(){
-        ArrayList<StorageUnit> storageUnits = null;
+    public ArrayList<ElcatalogEntity> getAllStorageUnits(){
+        ArrayList<ElcatalogEntity> storageUnits = null;
         storageUnits = storageUnitDAO.getAllStorageUnits();
         return storageUnits;
     }
@@ -41,8 +42,8 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @return storage unit with isn identifier from database
      */
     @Override
-    public StorageUnit getStorageUnitByISN(String isn) {
-        StorageUnit storageUnit = null;
+    public ElcatalogEntity getStorageUnitByISN(String isn) {
+        ElcatalogEntity storageUnit = null;
         storageUnit = storageUnitDAO.getStorageUnitByISN(isn);
         return storageUnit;
     }
@@ -52,7 +53,7 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @param storageUnit
      */
     @Override
-    public void addStorageUnit(StorageUnit storageUnit) {
+    public void addStorageUnit(ElcatalogEntity storageUnit) {
         storageUnitDAO.addStorageUnit(storageUnit);
     }
 
@@ -72,10 +73,10 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @return validated storage unit or storage this errors
      */
     @Override
-    public StorageUnit validateStorageUnit(NewStorageUnit newStorageUnit){
+    public ElcatalogEntity validateStorageUnit(NewStorageUnit newStorageUnit){
 
-        StorageUnit storageUnit = new StorageUnit(newStorageUnit.getAuthor(),newStorageUnit.getTitle(),
-                newStorageUnit.getPublishingHouse(),newStorageUnit.getCity(),1,1,
+        ElcatalogEntity storageUnit = new ElcatalogEntity(newStorageUnit.getAuthor(),newStorageUnit.getTitle(),
+                newStorageUnit.getPublishingHouse(),newStorageUnit.getCity(),Long.valueOf(1),Long.valueOf(1),
                 newStorageUnit.getIsn(),newStorageUnit.getText());
         Pattern p = Pattern.compile("^[a-zA-Zа-яА-ЯёЁ0-9-\\s.,_]{1,50}$+");
         Matcher m = p.matcher(newStorageUnit.getAuthor());
@@ -98,17 +99,17 @@ public class StorageUnitServiceImpl implements StorageUnitService {
         p = Pattern.compile("^[0-9]{1,4}$+");
         m = p.matcher(newStorageUnit.getYear());
         if (!m.matches()){
-            storageUnit.setYear(-1);
+            storageUnit.setYear(Long.valueOf(-1));
         }
         else{
-            storageUnit.setYear(Integer.parseInt(newStorageUnit.getYear()));
+            storageUnit.setYear(Long.parseLong(newStorageUnit.getYear()));
         }
         m = p.matcher(newStorageUnit.getPagesCount());
         if (!m.matches()){
-            storageUnit.setPagesCount(-1);
+            storageUnit.setPagesCount(Long.valueOf(-1));
         }
         else{
-            storageUnit.setPagesCount(Integer.parseInt(newStorageUnit.getPagesCount()));
+            storageUnit.setPagesCount(Long.parseLong(newStorageUnit.getPagesCount()));
         }
         p = Pattern.compile("^[a-zA-Zа-яА-ЯёЁ0-9-]{1,50}$+");
         m = p.matcher(newStorageUnit.getIsn());

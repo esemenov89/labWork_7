@@ -1,5 +1,6 @@
 package code.model.dao;
 
+import code.model.hibernate.UsersEntity;
 import code.model.pojo.User;
 
 import java.sql.SQLException;
@@ -10,10 +11,9 @@ import java.util.HashSet;
  *
  */
 public interface UserDAO {
-    User findUserByLoginAndPassword(String login, String password);
-    User findUserByLogin(String login);
-    User findUserByMail(String mail);
-    ArrayList<User> getAllUsers();
-    void addUser(User user);
-    void lockOrUnlockUser(String nick,int lock);
+    UsersEntity findUserByLogin(String login);
+    UsersEntity findUserByMail(String mail);
+    ArrayList<UsersEntity> getAllUsers();
+    void addUser(UsersEntity user);
+    void lockOrUnlockUser(String nick,Long lock);
 }

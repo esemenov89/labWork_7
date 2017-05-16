@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import code.model.hibernate.UsersEntity;
 import code.model.pojo.Role;
 import code.model.pojo.User;
 import code.services.UserService;
@@ -17,7 +18,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-//import com.kb.service.CustomUserService;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider{
@@ -34,9 +34,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        User user = userService.findUserByLogin(username);
+        UsersEntity user = userService.findUserByLogin(username);
 
-        if (user == null || !user.getLogin().equalsIgnoreCase(username) || user.getEnabled()!=1) {
+        if (user == null || !user.getNick().equalsIgnoreCase(username) || user.getEnabled()!=1) {
             throw new BadCredentialsException("Username not found.");
         }
 

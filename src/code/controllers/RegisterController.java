@@ -1,6 +1,7 @@
 package code.controllers;
 
 import code.model.dao.UserDAOImpl;
+import code.model.hibernate.UsersEntity;
 import code.model.pojo.User;
 import code.services.UserService;
 import org.apache.log4j.Logger;
@@ -36,7 +37,7 @@ public class RegisterController {
                                @RequestParam(value = "password", required = false) String password,
                                @RequestParam(value = "email", required = false) String mail) {
 
-        User user = null;
+        UsersEntity user = null;
         ModelAndView mav = new ModelAndView();
         user = userService.validateUser(login, password, mail);
         boolean error = false;
@@ -45,11 +46,11 @@ public class RegisterController {
         mav.addObject("registerPassword", "");
         mav.addObject("registerMail", "");
 
-        if (user.getLogin().equals("@Error1")) {
+        if (user.getNick().equals("@Error1")) {
             mav.addObject("registerLogin", "Login can be contain digits, and length don't be less 2 symbols and don't be over 16 symbols");
             error = true;
         }
-        if (user.getLogin().equals("@Error2")) {
+        if (user.getNick().equals("@Error2")) {
             mav.addObject("registerLogin", "User with this login already exist in database");
             error = true;
         }

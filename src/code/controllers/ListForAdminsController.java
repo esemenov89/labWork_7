@@ -1,5 +1,6 @@
 package code.controllers;
 
+import code.model.hibernate.ElcatalogEntity;
 import code.model.pojo.NewStorageUnit;
 import code.model.pojo.StorageUnit;
 import code.model.pojo.User;
@@ -39,7 +40,7 @@ public class ListForAdminsController {
         this.storageUnitService = storageUnitService;
     }
 
-    ArrayList<StorageUnit> storageUnits = null;
+    ArrayList<ElcatalogEntity> storageUnits = null;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView showList(ModelAndView mav) {
@@ -57,7 +58,7 @@ public class ListForAdminsController {
 
         ModelAndView mav = new ModelAndView();
         if (storageUnits!=null) {
-            StorageUnit storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
+            ElcatalogEntity storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
             mav.addObject("title", storageUnit.getTitle());
             mav.addObject("text", storageUnit.getText());
             mav.addObject("admin", 1);
@@ -78,7 +79,7 @@ public class ListForAdminsController {
     public ModelAndView changeStorageUnitGet(@RequestParam(value = "isn", required = true) String isn) {
         ModelAndView mav = new ModelAndView();
         if (storageUnits!=null) {
-            StorageUnit storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
+            ElcatalogEntity storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
 
             mav.addObject("author", storageUnit.getAuthor());
             mav.addObject("title", storageUnit.getTitle());
@@ -120,7 +121,7 @@ public class ListForAdminsController {
         ModelAndView mav = new ModelAndView();
         boolean error = false;
 
-        StorageUnit storageUnit = storageUnitService.validateStorageUnit(newStorageUnit);
+        ElcatalogEntity storageUnit = storageUnitService.validateStorageUnit(newStorageUnit);
 
             if (storageUnit.getAuthor().equals("@Error1")) {
                 mav.addObject("changeAuthor",
@@ -205,8 +206,8 @@ public class ListForAdminsController {
     public ModelAndView lockOrUnlock(@RequestParam(value = "nick", required = true) String nick,
                                @RequestParam(value = "lock", required = true) String lock) {
         ModelAndView mav = new ModelAndView();
-        int newLock = 0;
-        newLock = lock.equals("0") ? 1 : 0;
+        Long newLock = Long.valueOf(0);
+        newLock = lock.equals("0") ? Long.valueOf(1) : Long.valueOf(0);
         userService.lockOrUnlockUser(nick, newLock);
         mav.setViewName("redirect:/listEntitiesForAdmins");
         return mav;

@@ -14,6 +14,18 @@ public class UsersEntity {
     private String role;
     private Long enabled;
 
+    public UsersEntity(){
+
+    }
+
+    public UsersEntity(String nick, String mail, String password, String role, Long enabled) {
+        this.nick = nick;
+        this.mail = mail;
+        this.password = password;
+        this.role = role;
+        this.enabled = enabled;
+    }
+
     @Id
     @Column(name = "NICK", nullable = false, length = 255)
     public String getNick() {

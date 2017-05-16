@@ -1,6 +1,7 @@
 package code.services;
 
 import code.model.dao.UserDAOImpl;
+import code.model.hibernate.UsersEntity;
 import code.model.pojo.StorageUnit;
 import code.model.pojo.User;
 import org.apache.log4j.Logger;
@@ -34,27 +35,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByLogin(String login){
+    public UsersEntity findUserByLogin(String login){
         return userDAO.findUserByLogin(login);
     }
 
-    /**
-     * Method for authorization user
-     * @param login - of user
-     * @param password - of user
-     * @return
-     */
-    @Override
-    public User auth(String login, String password){
-        User user = null;
-        user = userDAO.findUserByLogin(login);
-        LOGGER.debug("user: " + user);
-        if (user == null || !(BCrypt.checkpw(password, user.getPassword()))) {
-            return null;
-        }
-        LOGGER.debug("user not blocked");
-        return user;
-    }
 
     /**
      * Validate user
@@ -65,15 +49,15 @@ public class UserServiceImpl implements UserService {
      * @return validated user or user with errors
      */
     @Override
-    public User validateUser(String login, String password, String mail){
-        User user = new User(login, mail, password, "ROLE_USER", 1);
+    public UsersEntity validateUser(String login, String password, String mail){
+        UsersEntity user = new UsersEntity(login,mail,password,"ROLE_USER",Long.valueOf(1));
         Pattern p = Pattern.compile("^[a-zA-Z0-9]{2,16}$+");
         Matcher m = p.matcher(login);
         if (!m.matches()) {
-            user.setLogin("@Error1");
+            user.setNick("@Error1");
         }
         if (userDAO.findUserByLogin(login) != null) {
-            user.setLogin("@Error2");
+            user.setNick("@Error2");
         }
         p = Pattern.compile("^[a-zA-Z0-9]{8,16}$+");
         m = p.matcher(password);
@@ -96,7 +80,7 @@ public class UserServiceImpl implements UserService {
      * @param user
      */
     @Override
-    public void addUser(User user){
+    public void addUser(UsersEntity user){
         userDAO.addUser(user);
     }
 
@@ -106,7 +90,7 @@ public class UserServiceImpl implements UserService {
      * @param lock - if 1, then user will be locked, if 0, then user will be unlocked
      */
     @Override
-    public void lockOrUnlockUser(String nick,int lock){
+    public void lockOrUnlockUser(String nick,Long lock){
         userDAO.lockOrUnlockUser(nick, lock);
     }
 
@@ -115,8 +99,8 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ArrayList<User> getAllUsers(){
-        ArrayList<User> users = null;
+    public ArrayList<UsersEntity> getAllUsers(){
+        ArrayList<UsersEntity> users = null;
         users = userDAO.getAllUsers();
         return users;
     }

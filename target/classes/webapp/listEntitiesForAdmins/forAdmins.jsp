@@ -60,14 +60,14 @@
 
     <c:forEach items="${requestScope.users}" var="user">
         <tr>
-            <td><c:out value="${user.login}"></c:out></td>
+            <td><c:out value="${user.nick}"></c:out></td>
             <td><c:out value="${user.role=='ROLE_USER' ? 'User' : 'Admin'}"></c:out></td>
             <c:choose>
                 <c:when test="${user.enabled=='1'}">
                     <td><p>Not locked</p></td>
                     <c:if test="${user.role=='ROLE_USER'}">
                         <td>
-                            <input type="button" value="lock" onclick="location.href = '${pageContext.request.contextPath}${currentURL}/lockOrUnlock?nick=<c:out value="${user.login}"/>&lock=<c:out value="${user.enabled}"/>'">
+                            <input type="button" value="lock" onclick="location.href = '${pageContext.request.contextPath}${currentURL}/lockOrUnlock?nick=<c:out value="${user.nick}"/>&lock=<c:out value="${user.enabled}"/>'">
                         </td>
                     </c:if>
                 </c:when>
@@ -75,7 +75,7 @@
                     <td><p>Locked</p></td>
                     <c:if test="${user.role=='ROLE_USER'}">
                         <td>
-                            <input type="button" value="unlock" onclick="location.href = '${pageContext.request.contextPath}${currentURL}/lockOrUnlock?nick=<c:out value="${user.login}"/>&lock=<c:out value="${user.enabled}"/>'">
+                            <input type="button" value="unlock" onclick="location.href = '${pageContext.request.contextPath}${currentURL}/lockOrUnlock?nick=<c:out value="${user.nick}"/>&lock=<c:out value="${user.enabled}"/>'">
                         </td>
                     </c:if>
                 </c:otherwise>

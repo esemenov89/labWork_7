@@ -1,5 +1,6 @@
 package code.controllers;
 
+import code.model.hibernate.ElcatalogEntity;
 import code.model.pojo.StorageUnit;
 import code.services.StorageUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ListForUsersController {
         this.storageUnitService = storageUnitService;
     }
 
-    ArrayList<StorageUnit> storageUnits = null;
+    ArrayList<ElcatalogEntity> storageUnits = null;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView showList(ModelAndView mav) throws Exception{
@@ -43,7 +44,7 @@ public class ListForUsersController {
     public ModelAndView readStorageUnit(@RequestParam(value = "isn", required = false) String isn) {
         ModelAndView mav = new ModelAndView();
         if (storageUnits!=null) {
-            StorageUnit storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
+            ElcatalogEntity storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
             mav.addObject("title", storageUnit.getTitle());
             mav.addObject("text", storageUnit.getText());
             mav.setViewName("read/readStorageUnit");

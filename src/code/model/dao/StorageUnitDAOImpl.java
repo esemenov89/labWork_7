@@ -1,13 +1,20 @@
 package code.model.dao;
 
+import code.model.hibernate.ElcatalogEntity;
+import code.model.hibernate.HibernateSessionFactory;
+import code.model.hibernate.UsersEntity;
 import code.services.ConnectionPool;
 import code.model.pojo.StorageUnit;
 import code.services.LibraryException;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for data exchange with database
@@ -21,26 +28,16 @@ public class StorageUnitDAOImpl implements StorageUnitDAO {
      *
      * @return all storage units from database
      */
-    public ArrayList<StorageUnit> getAllStorageUnits(){
-        StorageUnit storageUnit=null;
-        ArrayList<StorageUnit> storageUnits = new ArrayList<>();
+    public ArrayList<ElcatalogEntity> getAllStorageUnits(){
+        ArrayList<ElcatalogEntity> books = new ArrayList<>();
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection
-                     .prepareStatement( "SELECT * FROM ELCATALOG")) {
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                storageUnit = createEntity(resultSet);
-                storageUnits.add(storageUnit);
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new LibraryException("SQLException","getAllStorageUnits");
-        }
-        catch (Exception e){
-            LOGGER.error(e);
-        }
-        return storageUnits;
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        List<ElcatalogEntity> list = session.createCriteria(ElcatalogEntity.class).list();
+
+        books=(ArrayList)list;
+
+        session.close();
+        return books;
     }
 
     /**
@@ -48,27 +45,17 @@ public class StorageUnitDAOImpl implements StorageUnitDAO {
      * @param storageUnit
      */
     @Override
-    public void addStorageUnit(StorageUnit storageUnit){
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement statement = connection
-                     .prepareStatement( "INSERT INTO ELCATALOG(AUTHOR,TITLE,PUBLISHING_HOUSE,CITY,YEAR," +
-                             "PAGES_COUNT,ISN,TEXT) VALUES(?,?,?,?,?,?,?,?)")) {
-            statement.setString(1,storageUnit.getAuthor());
-            statement.setString(2,storageUnit.getTitle());
-            statement.setString(3,storageUnit.getPublishingHouse());
-            statement.setString(4,storageUnit.getCity());
-            statement.setInt(5,storageUnit.getYear());
-            statement.setInt(6,storageUnit.getPagesCount());
-            statement.setString(7,storageUnit.getIsn());
-            statement.setString(8,storageUnit.getText());
-            statement.executeQuery();
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new LibraryException("SQLException","addStorageUnit");
-        }
-        catch (Exception e){
-            LOGGER.error(e);
-        }
+    public void addStorageUnit(ElcatalogEntity storageUnit){
+
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        session.beginTransaction();
+        ElcatalogEntity bookNew = new ElcatalogEntity(storageUnit.getAuthor(),storageUnit.getTitle(),
+                storageUnit.getPublishingHouse(),storageUnit.getCity(),storageUnit.getYear(),
+                storageUnit.getPagesCount(),storageUnit.getIsn(),storageUnit.getText());
+        session.save(bookNew);
+        session.getTransaction().commit();
+
+        session.close();
     }
 
     /**
@@ -76,26 +63,19 @@ public class StorageUnitDAOImpl implements StorageUnitDAO {
      * @param isn - identifier of storage unit
      * @return storage unit with isn identifier from database
      */
-    public StorageUnit getStorageUnitByISN(String isn){
-        StorageUnit storageUnit=null;
+    public ElcatalogEntity getStorageUnitByISN(String isn){
+        ElcatalogEntity book = null;
 
-        try (Connection connection = ConnectionPool.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection
-                     .prepareStatement( "SELECT * FROM ELCATALOG WHERE ISN=?")) {
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        Query query = session.createQuery("from ElcatalogEntity where lower(isn) = :paramIsn");
+        query.setParameter("paramIsn", isn.toLowerCase());
+        List list = query.list();
 
-            preparedStatement.setString(1, isn);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                storageUnit = createEntity(resultSet);
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new LibraryException("SQLException","getStorageUnitByISN");
-        }
-        catch (Exception e){
-            LOGGER.error(e);
-        }
-        return storageUnit;
+        if(list.size()>0)
+            book = (ElcatalogEntity)list.get(0);
+
+        session.close();
+        return book;
     }
 
     /**
@@ -104,44 +84,11 @@ public class StorageUnitDAOImpl implements StorageUnitDAO {
      */
     @Override
     public void delStorageUnitByISN(String isn){
-
-        try (Connection connection = ConnectionPool.getInstance().getConnection()){
-            PreparedStatement preparedStatement = connection.prepareStatement( "DELETE FROM READ_STORAGE_UNIT WHERE STORAGE_UNIT=?");
-            preparedStatement.setString(1, isn);
-            preparedStatement.execute();
-
-            preparedStatement=connection.prepareStatement("DELETE FROM ELCATALOG WHERE ISN=?");
-            preparedStatement.setString(1, isn);
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new LibraryException("SQLException","delStorageUnitByISN");
-        }
-        catch (Exception e){
-            LOGGER.error(e);
-        }
-    }
-
-    /**
-     * Create storage unit from data of database
-     * @param resultSet
-     * @return
-     */
-    private StorageUnit createEntity(ResultSet resultSet) {
-        StorageUnit storageUnit=null;
-        try {
-            storageUnit = new StorageUnit(resultSet.getString("AUTHOR"),
-                    resultSet.getString("TITLE"),
-                    resultSet.getString("PUBLISHING_HOUSE"),
-                    resultSet.getString("CITY"),
-                    resultSet.getInt("YEAR"),
-                    resultSet.getInt("PAGES_COUNT"),
-                    resultSet.getString("ISN"),
-                    resultSet.getString("TEXT"));
-        }
-        catch (Exception e){
-            LOGGER.error(e);
-        }
-        return storageUnit;
+        Session session = HibernateSessionFactory.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        ElcatalogEntity elcatalogEntity = (ElcatalogEntity) session.get(ElcatalogEntity.class, isn);
+        session.delete(elcatalogEntity);
+        transaction.commit();
+        session.close();
     }
 }
