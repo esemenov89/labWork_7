@@ -87,7 +87,6 @@
     <orderEntry type="library" name="Maven: org.rhq.helpers:rhq-pluginAnnotations:3.0.4" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-ehcache:5.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: net.sf.ehcache:ehcache-core:2.4.3" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.5" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
@@ -96,5 +95,10 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-juli:9.0.0.M19" level="project" />
     <orderEntry type="library" name="Maven: jstl:jstl:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.mindrot:jbcrypt:0.4" level="project" />
+    <orderEntry type="library" name="Maven: ma.glasnost.orika:orika-core:1.4.6" level="project" />
+    <orderEntry type="library" name="Maven: com.thoughtworks.paranamer:paranamer:2.7" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.6" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:1.2_jdk5" level="project" />
+    <orderEntry type="library" name="Maven: com.carrotsearch:java-sizeof:0.0.4" level="project" />
   </component>
 </module>

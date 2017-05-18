@@ -1,13 +1,10 @@
 package code.model.pojo;
 
-import java.util.List;
-
 import org.springframework.security.core.GrantedAuthority;
 
 public class Role implements GrantedAuthority{
 
     private String name;
-
 
     public String getName() {
         return name;

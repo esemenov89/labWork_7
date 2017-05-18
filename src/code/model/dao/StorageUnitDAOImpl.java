@@ -1,43 +1,40 @@
 package code.model.dao;
 
+import code.model.dto.ElcatalogDTO;
 import code.model.hibernate.ElcatalogEntity;
 import code.model.hibernate.HibernateSessionFactory;
-import code.model.hibernate.UsersEntity;
-import code.services.ConnectionPool;
-import code.model.pojo.StorageUnit;
-import code.services.LibraryException;
+import ma.glasnost.orika.MapperFacade;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class for data exchange with database
  */
 @Repository
 public class StorageUnitDAOImpl implements StorageUnitDAO {
-
     private static final Logger LOGGER = Logger.getLogger(StorageUnitDAOImpl.class);
+    MapperFacade mapperBooks;
+
+    @Autowired
+    public void setMapperFacade(MapperFacade mapperFacade) {
+        this.mapperBooks = mapperFacade;
+    }
 
     /**
      *
      * @return all storage units from database
      */
-    public ArrayList<ElcatalogEntity> getAllStorageUnits(){
-        ArrayList<ElcatalogEntity> books = new ArrayList<>();
-
+    public ArrayList<ElcatalogDTO> getAllStorageUnits(){
+        ArrayList<ElcatalogDTO> storageUnitsDTO;
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        List<ElcatalogEntity> list = session.createCriteria(ElcatalogEntity.class).list();
-
-        books=(ArrayList)list;
-
+        storageUnitsDTO=(ArrayList)(mapperBooks.mapAsList(session.createCriteria(ElcatalogEntity.class).list(),ElcatalogDTO.class));
         session.close();
-        return books;
+        return storageUnitsDTO;
     }
 
     /**
@@ -45,16 +42,12 @@ public class StorageUnitDAOImpl implements StorageUnitDAO {
      * @param storageUnit
      */
     @Override
-    public void addStorageUnit(ElcatalogEntity storageUnit){
-
+    public void addStorageUnit(ElcatalogDTO storageUnit){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
-        ElcatalogEntity bookNew = new ElcatalogEntity(storageUnit.getAuthor(),storageUnit.getTitle(),
-                storageUnit.getPublishingHouse(),storageUnit.getCity(),storageUnit.getYear(),
-                storageUnit.getPagesCount(),storageUnit.getIsn(),storageUnit.getText());
-        session.save(bookNew);
+        ElcatalogEntity book = mapperBooks.map(storageUnit,ElcatalogEntity.class);
+        session.save(book);
         session.getTransaction().commit();
-
         session.close();
     }
 
@@ -63,17 +56,11 @@ public class StorageUnitDAOImpl implements StorageUnitDAO {
      * @param isn - identifier of storage unit
      * @return storage unit with isn identifier from database
      */
-    public ElcatalogEntity getStorageUnitByISN(String isn){
-        ElcatalogEntity book = null;
-
+    public ElcatalogDTO getStorageUnitByISN(String isn){
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        Query query = session.createQuery("from ElcatalogEntity where lower(isn) = :paramIsn");
-        query.setParameter("paramIsn", isn.toLowerCase());
-        List list = query.list();
-
-        if(list.size()>0)
-            book = (ElcatalogEntity)list.get(0);
-
+        Transaction transaction = session.beginTransaction();
+        ElcatalogDTO book = mapperBooks.map((ElcatalogEntity) session.get(ElcatalogEntity.class, isn),ElcatalogDTO.class);
+        transaction.commit();
         session.close();
         return book;
     }

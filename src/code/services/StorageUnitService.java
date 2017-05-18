@@ -1,5 +1,6 @@
 package code.services;
 
+import code.model.dto.ElcatalogDTO;
 import code.model.hibernate.ElcatalogEntity;
 import code.model.pojo.NewStorageUnit;
 import code.model.pojo.StorageUnit;
@@ -13,9 +14,9 @@ import java.util.TreeSet;
  * Created by admin on 22.04.2017.
  */
 public interface StorageUnitService {
-    ArrayList<ElcatalogEntity> getAllStorageUnits();
-    ElcatalogEntity getStorageUnitByISN(String isn);
+    ArrayList<ElcatalogDTO> getAllStorageUnits();
+    ElcatalogDTO getStorageUnitByISN(String isn);
     void delStorageUnitByISN(String isn);
-    ElcatalogEntity validateStorageUnit(NewStorageUnit newStorageUnit);
-    void addStorageUnit(ElcatalogEntity storageUnit);
+    ElcatalogDTO validateStorageUnit(NewStorageUnit newStorageUnit);
+    void addStorageUnit(ElcatalogDTO storageUnit);
 }

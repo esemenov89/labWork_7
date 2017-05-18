@@ -1,24 +1,19 @@
 package code.controllers;
 
-import code.model.hibernate.ElcatalogEntity;
+import code.model.dto.ElcatalogDTO;
 import code.model.pojo.NewStorageUnit;
-import code.model.pojo.StorageUnit;
-import code.model.pojo.User;
 import code.services.StorageUnitService;
 import code.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.TreeSet;
+
 
 /**
  *
@@ -40,7 +35,7 @@ public class ListForAdminsController {
         this.storageUnitService = storageUnitService;
     }
 
-    ArrayList<ElcatalogEntity> storageUnits = null;
+    ArrayList<ElcatalogDTO> storageUnits = null;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView showList(ModelAndView mav) {
@@ -58,7 +53,7 @@ public class ListForAdminsController {
 
         ModelAndView mav = new ModelAndView();
         if (storageUnits!=null) {
-            ElcatalogEntity storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
+            ElcatalogDTO storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
             mav.addObject("title", storageUnit.getTitle());
             mav.addObject("text", storageUnit.getText());
             mav.addObject("admin", 1);
@@ -79,7 +74,7 @@ public class ListForAdminsController {
     public ModelAndView changeStorageUnitGet(@RequestParam(value = "isn", required = true) String isn) {
         ModelAndView mav = new ModelAndView();
         if (storageUnits!=null) {
-            ElcatalogEntity storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
+            ElcatalogDTO storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
 
             mav.addObject("author", storageUnit.getAuthor());
             mav.addObject("title", storageUnit.getTitle());
@@ -96,7 +91,6 @@ public class ListForAdminsController {
         return mav;
     }
 
-    //TODO Model Attribute for RequestParams
     @RequestMapping(value = "/changeStorageUnit",method = RequestMethod.POST)
     public ModelAndView changeStorageUnitPost(@ModelAttribute NewStorageUnit newStorageUnit) {
         return changeOrAddStorageUnit(newStorageUnit,true);
@@ -121,7 +115,7 @@ public class ListForAdminsController {
         ModelAndView mav = new ModelAndView();
         boolean error = false;
 
-        ElcatalogEntity storageUnit = storageUnitService.validateStorageUnit(newStorageUnit);
+        ElcatalogDTO storageUnit = storageUnitService.validateStorageUnit(newStorageUnit);
 
             if (storageUnit.getAuthor().equals("@Error1")) {
                 mav.addObject("changeAuthor",

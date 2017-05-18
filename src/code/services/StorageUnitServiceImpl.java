@@ -1,13 +1,11 @@
 package code.services;
 
 import code.model.dao.StorageUnitDAO;
-import code.model.hibernate.ElcatalogEntity;
+import code.model.dto.ElcatalogDTO;
 import code.model.pojo.NewStorageUnit;
-import code.model.pojo.StorageUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
+;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +28,8 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @return all storage units from database
      */
     @Override
-    public ArrayList<ElcatalogEntity> getAllStorageUnits(){
-        ArrayList<ElcatalogEntity> storageUnits = null;
+    public ArrayList<ElcatalogDTO> getAllStorageUnits(){
+        ArrayList<ElcatalogDTO> storageUnits = null;
         storageUnits = storageUnitDAO.getAllStorageUnits();
         return storageUnits;
     }
@@ -42,8 +40,8 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @return storage unit with isn identifier from database
      */
     @Override
-    public ElcatalogEntity getStorageUnitByISN(String isn) {
-        ElcatalogEntity storageUnit = null;
+    public ElcatalogDTO getStorageUnitByISN(String isn) {
+        ElcatalogDTO storageUnit = null;
         storageUnit = storageUnitDAO.getStorageUnitByISN(isn);
         return storageUnit;
     }
@@ -53,7 +51,7 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @param storageUnit
      */
     @Override
-    public void addStorageUnit(ElcatalogEntity storageUnit) {
+    public void addStorageUnit(ElcatalogDTO storageUnit) {
         storageUnitDAO.addStorageUnit(storageUnit);
     }
 
@@ -73,9 +71,9 @@ public class StorageUnitServiceImpl implements StorageUnitService {
      * @return validated storage unit or storage this errors
      */
     @Override
-    public ElcatalogEntity validateStorageUnit(NewStorageUnit newStorageUnit){
+    public ElcatalogDTO validateStorageUnit(NewStorageUnit newStorageUnit){
 
-        ElcatalogEntity storageUnit = new ElcatalogEntity(newStorageUnit.getAuthor(),newStorageUnit.getTitle(),
+        ElcatalogDTO storageUnit = new ElcatalogDTO(newStorageUnit.getAuthor(),newStorageUnit.getTitle(),
                 newStorageUnit.getPublishingHouse(),newStorageUnit.getCity(),Long.valueOf(1),Long.valueOf(1),
                 newStorageUnit.getIsn(),newStorageUnit.getText());
         Pattern p = Pattern.compile("^[a-zA-Zа-яА-ЯёЁ0-9-\\s.,_]{1,50}$+");

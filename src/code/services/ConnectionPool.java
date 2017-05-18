@@ -2,8 +2,6 @@ package code.services;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
-import org.springframework.stereotype.Repository;
-
 import java.util.Locale;
 
 public class ConnectionPool {

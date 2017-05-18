@@ -1,13 +1,16 @@
 package code.model.dao;
 
-
+import code.model.dto.UserDTO;
 import code.model.hibernate.HibernateSessionFactory;
 import code.model.hibernate.UsersEntity;
+import ma.glasnost.orika.MapperFacade;
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Query;
+import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,6 +20,12 @@ import org.springframework.stereotype.Repository;
 public class UserDAOImpl implements UserDAO {
 
     private static final Logger LOGGER = Logger.getLogger(UserDAOImpl.class);
+    MapperFacade mapperUsers;
+
+    @Autowired
+    public void setMapperFacade(MapperFacade mapperFacade) {
+        this.mapperUsers = mapperFacade;
+    }
 
     /**
      * Find user with login=login in database
@@ -26,17 +35,12 @@ public class UserDAOImpl implements UserDAO {
      */
     @Override
     public UsersEntity findUserByLogin(String login) {
-        UsersEntity user = null;
-
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        Query query = session.createQuery("from UsersEntity where lower(nick) = :paramName");
-        query.setParameter("paramName", login.toLowerCase());
-        List list = query.list();
-
-        if(list.size()>0)
-            user = (UsersEntity)list.get(0);
-
+        Transaction transaction = session.beginTransaction();
+        UsersEntity user = (UsersEntity) session.get(UsersEntity.class, login);
+        transaction.commit();
         session.close();
+
         return user;
     }
 
@@ -48,13 +52,12 @@ public class UserDAOImpl implements UserDAO {
      */
     @Override
     public void lockOrUnlockUser(String login, Long lock) {
-
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        String hql = "UPDATE UsersEntity set enabled=:lock WHERE nick = :login";
-        Query query = session.createQuery(hql);
-        query.setParameter("lock", lock);
-        query.setParameter("login", login);
-        query.executeUpdate();
+        Transaction transaction = session.beginTransaction();
+        UsersEntity user = (UsersEntity) session.get(UsersEntity.class, login);
+        user.setEnabled(lock);
+        session.update(user);
+        transaction.commit();
         session.close();
     }
 
@@ -65,16 +68,15 @@ public class UserDAOImpl implements UserDAO {
      * @return
      */
     @Override
-    public UsersEntity findUserByMail(String mail) {
-        UsersEntity user = null;
+    public UserDTO findUserByMail(String mail) {
+        UserDTO user = null;
 
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         Query query = session.createQuery("from UsersEntity where LOWER(mail)  = :paramMail");
         query.setParameter("paramMail", mail.toLowerCase());
         List list = query.list();
         if(list.size()>0)
-            user = (UsersEntity)list.get(0);
-
+            user = mapperUsers.map((UsersEntity)list.get(0),UserDTO.class);
         session.close();
         return user;
     }
@@ -86,19 +88,10 @@ public class UserDAOImpl implements UserDAO {
      */
     @Override
     public void addUser(UsersEntity user) {
-
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
         session.beginTransaction();
-        UsersEntity userNew = new UsersEntity();
-        userNew.setNick(user.getNick());
-        userNew.setMail(user.getMail());
-        userNew.setPassword(user.getPassword());
-        userNew.setRole(user.getRole());
-        userNew.setEnabled(user.getEnabled());
-
-        session.save(userNew);
+        session.save(user);
         session.getTransaction().commit();
-
         session.close();
     }
 
@@ -107,15 +100,11 @@ public class UserDAOImpl implements UserDAO {
      *
      * @return
      */
-    public ArrayList<UsersEntity> getAllUsers() {
-        ArrayList<UsersEntity> users = new ArrayList<>();
-
+    public ArrayList<UserDTO> getAllUsers() {
+        ArrayList<UserDTO> usersDTO;
         Session session = HibernateSessionFactory.getSessionFactory().openSession();
-        List<UsersEntity> list = session.createCriteria(UsersEntity.class).list();
-
-        users=(ArrayList)list;
-
+        usersDTO=(ArrayList)(mapperUsers.mapAsList(session.createCriteria(UsersEntity.class).list(),UserDTO.class));
         session.close();
-        return users;
+        return usersDTO;
     }
 }

@@ -1,21 +1,12 @@
 package code.services;
 
-import code.model.dao.UserDAOImpl;
+import code.model.dto.UserDTO;
 import code.model.hibernate.UsersEntity;
-import code.model.pojo.StorageUnit;
-import code.model.pojo.User;
 import org.apache.log4j.Logger;
-
 import code.model.dao.UserDAO;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,8 +90,8 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ArrayList<UsersEntity> getAllUsers(){
-        ArrayList<UsersEntity> users = null;
+    public ArrayList<UserDTO> getAllUsers(){
+        ArrayList<UserDTO> users = null;
         users = userDAO.getAllUsers();
         return users;
     }

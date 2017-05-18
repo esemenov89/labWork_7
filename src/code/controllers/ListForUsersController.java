@@ -1,20 +1,15 @@
 package code.controllers;
 
-import code.model.hibernate.ElcatalogEntity;
-import code.model.pojo.StorageUnit;
+import code.model.dto.ElcatalogDTO;
 import code.services.StorageUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.TreeSet;
 
 /**
  *
@@ -30,7 +25,7 @@ public class ListForUsersController {
         this.storageUnitService = storageUnitService;
     }
 
-    ArrayList<ElcatalogEntity> storageUnits = null;
+    ArrayList<ElcatalogDTO> storageUnits = null;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView showList(ModelAndView mav) throws Exception{
@@ -44,7 +39,7 @@ public class ListForUsersController {
     public ModelAndView readStorageUnit(@RequestParam(value = "isn", required = false) String isn) {
         ModelAndView mav = new ModelAndView();
         if (storageUnits!=null) {
-            ElcatalogEntity storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
+            ElcatalogDTO storageUnit=storageUnits.stream().filter(x->x.getIsn().equals(isn)).findFirst().get();
             mav.addObject("title", storageUnit.getTitle());
             mav.addObject("text", storageUnit.getText());
             mav.setViewName("read/readStorageUnit");

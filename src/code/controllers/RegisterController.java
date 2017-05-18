@@ -1,8 +1,6 @@
 package code.controllers;
 
-import code.model.dao.UserDAOImpl;
 import code.model.hibernate.UsersEntity;
-import code.model.pojo.User;
 import code.services.UserService;
 import org.apache.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.sql.SQLException;
 
 /**
  * Created by admin on 27.04.2017.
